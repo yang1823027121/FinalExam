@@ -179,8 +179,17 @@ if low_stock_records:
 else:
     st.success(f" All products have stock equal or above the threshold ({threshold} units).")
 
-st.subheader(" Complete Inventory Status")
-st.dataframe(filtered_inventory, use_container_width=True)
+st.subheader(" Complete Inventory Status (Low stock highlighted in red)")
+
+def highlight_low_stock(row):
+    if row["stock_quantity"] < threshold:
+        return ["background-color: #ffcccc"] * len(row) 
+    else:
+        return [""] * len(row)
+
+styled_inventory = filtered_inventory.style.apply(highlight_low_stock, axis=1)
+
+st.dataframe(styled_inventory, use_container_width=True)
 
 st.subheader("Stock Quantity Distribution")
 fig4, ax4 = plt.subplots()
